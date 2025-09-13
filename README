@@ -83,3 +83,132 @@ python plot_auc.py --log logs/train.log --output figures/auc.png
 - Keep random seeds fixed for reproducibility (e.g., `--seed 42` if provided).
 - For large datasets, consider saving intermediate artifacts (encoders, scalers, splits) to speed up iteration.
 
+
+
+#Preprocessing:
+
+Gene Expression Data Processing Toolkit
+
+This repository contains a collection of Python scripts for processing large-scale single-cell gene expression data stored in .h5ad and .pkl formats. The scripts provide utilities for extracting metadata, chunking large datasets, converting formats, counting gene occurrences, and preparing gene-level subsets.
+
+Scripts Overview
+1. extract_chunked.py / extract_chunked_normal.py
+
+Purpose: Splits large .h5ad files into manageable .pkl chunks using Scanpy’s backed mode.
+
+Outputs:
+
+Observation metadata (obs.csv)
+
+Chunked .pkl files containing subsets of cells and gene expression matrices.
+
+Usage:
+
+python extract_chunked.py
+python extract_chunked_normal.py
+
+
+Adjusts paths for processed vs. normal datasets.
+
+2. chunk.py / chunk_normal.py
+
+Purpose: Converts .pkl chunks into dense .txt files while filtering for a selected set of genes (e.g., those with exactly 613 occurrences).
+
+Workflow:
+
+Loads gene_counts.txt.
+
+Extracts expression values for selected genes.
+
+Saves results in 100-cell chunks as tab-delimited .txt.
+
+Usage:
+
+python chunk.py
+python chunk_normal.py
+
+3. extractall.py / extractall_normal.py
+
+Purpose: Extracts and saves only the observation metadata (obs) from .h5ad files.
+
+Outputs: Observation tables as *_observation.txt.
+
+Usage:
+
+python extractall.py
+python extractall_normal.py
+
+4. count_gene.py
+
+Purpose: Counts the frequency of each gene across all .pkl files in both normal and processed datasets.
+
+Outputs: gene_counts.txt containing counts in the format:
+
+GENE_NAME: COUNT
+
+
+Usage:
+
+python count_gene.py
+
+5. convert.py
+
+Purpose: Converts .pkl files (with pandas DataFrames) into .csv.
+
+Outputs: .csv files in ../processed_csv/.
+
+Usage:
+
+python convert.py
+
+6. prepare_gene_ind.py
+
+Purpose: Prepares subsets of processed data for a selected gene list.
+
+Workflow:
+
+Reads genes from selected_genes.txt.
+
+Loads .pkl files, filters for the selected genes.
+
+Splits data into chunks of 100 and saves as .pkl.
+
+Usage:
+
+python prepare_gene_ind.py
+
+Typical Workflow
+
+Chunk .h5ad files
+Run extract_chunked.py or extract_chunked_normal.py to break raw .h5ad into smaller .pkl chunks.
+
+Count genes across chunks
+Run count_gene.py to generate gene_counts.txt.
+
+Filter and extract selected genes
+Use chunk.py or chunk_normal.py to create .txt files containing only selected genes.
+
+Optional conversions
+
+Use convert.py to convert .pkl to .csv.
+
+Use extractall.py / extractall_normal.py for metadata only.
+
+Use prepare_gene_ind.py for gene-specific subsets.
+
+Requirements
+
+Python 3.x
+
+Packages:
+
+numpy
+
+pandas
+
+scipy
+
+scanpy
+
+anndata
+
